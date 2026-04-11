@@ -86,5 +86,23 @@ class NewJavaFeaturesUnitTest {
         assertEquals(Set.of(6), result.get(1));
     }
 
+    @Test
+    void collectToMap_vs_collectGroupingBy() {
+        List<String> towns = List.of("SEN_Ziguinchor", "FRA_Valence", "ESP_Valence", "FRA_Rennes", "ESP_Barcelona");
+
+        Map<String, String> townsByCountry1 = towns.stream().collect(Collectors.toMap(
+                t -> t.split("_")[0],
+                t -> t.split("_")[1],
+                (t1, t2) -> t1.concat(", ").concat(t2)));
+
+        Map<String, String> townsByCountry2 = towns.stream().collect(Collectors.groupingBy(
+                t -> t.split("_")[0],
+                Collectors.mapping(t -> t.split("_")[1], Collectors.joining(", "))));
+
+        assertEquals(3, townsByCountry1.keySet().size());
+        assertEquals("Ziguinchor", townsByCountry1.get("SEN"));
+        assertEquals(townsByCountry1, townsByCountry2);
+    }
+
 
 }
