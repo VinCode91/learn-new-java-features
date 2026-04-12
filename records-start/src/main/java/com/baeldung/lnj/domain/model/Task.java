@@ -1,41 +1,45 @@
 package com.baeldung.lnj.domain.model;
 
-import java.util.Objects;
+import java.io.Serializable;
 
-public class Task {
-    
-    private String code;
-    private String name;
+public record Task(String code, String name) implements Serializable {
 
-    public Task(String code, String name) {
-        this.code = code;
-        this.name = name;
-    }
-    
-    public String code() {
-        return code;
-    }
+    /**
+     * When we declare a record, the Java compiler automatically generates several members for us:
+     *
+     * private final fields for each property – code, name
+     * A “canonical constructor” that takes all components as arguments – Task(String code, String name)
+     * Public accessor methods for each component – code(), name()
+     * Correct implementations of equals(), hashCode(), and toString() based on all the components in the record header
+     */
 
-    public String name() {
-        return name;
-    }
+    public static final String DEFAULT_NAME = "DEFAULT";
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
-        return Objects.equals(code, task.code) &&
-           Objects.equals(name, task.name);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(code, name);
+    /**
+     * Compact constructor to run validation or normalization code before canonical constructor is called
+     */
+    public Task {
+        if (code == null || code.isBlank()) {
+            throw new IllegalArgumentException("Code can't be blank");
+        }
+        if (name == null || name.isBlank()) {
+            name = DEFAULT_NAME; // Normalization
+        }
     }
 
-    @Override
-    public String toString() {
-        return "Task [code= " + code + "name=" + name + "]";
+    /**
+     * Overloaded constructors must always delegate to the canonical one
+     */
+    public Task(String code) {
+        this(code, "Default Name");
+    }
+
+    public static Task fromCampaign(Campaign campaign) {
+        return new Task(campaign.getCode(), campaign.getName());
+    }
+
+    public String asLogEntry() {
+        return "Task[" + code + "]";
     }
 }
