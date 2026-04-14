@@ -41,7 +41,7 @@
     <properties>
         <!-- non-dependencies -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>25</java.version>
+        <java.version>22</java.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
 
         <junit-jupiter.version>5.14.0</junit-jupiter.version>
